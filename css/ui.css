@@ -1,0 +1,134 @@
+/* 원작 UI 외형. 색상값은 docs/analysis.md 2절 실측치. */
+
+#stage {
+  font-family: "Baloo 2", "Nunito", "Segoe UI Rounded", "Apple SD Gothic Neo",
+               system-ui, sans-serif;
+  font-weight: 800;
+  color: #fff;
+}
+
+/* ── 점수 알약 ───────────────────────────────────────── */
+#score-pill {
+  display: flex;
+  align-items: center;
+  gap: 2cqw;
+  padding-left: 0.6cqw;
+  border-radius: 999px;
+  background: rgba(24, 8, 54, 0.62);
+  border: 0.28cqw solid rgba(150, 110, 220, 0.55);
+}
+
+#score-coin {
+  flex: none;
+  width: 7.3cqw;
+  height: 7.3cqw;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 4.4cqw;
+  background: radial-gradient(circle at 35% 30%, #C98BFF 0%, #7B3BE0 60%, #5B23B4 100%);
+  box-shadow: inset 0 -0.3cqw 0.5cqw rgba(0, 0, 0, .35);
+}
+
+#score {
+  font-size: 5.7cqw;
+  letter-spacing: 0.1cqw;
+  text-shadow: 0 0.25cqw 0.4cqw rgba(0, 0, 0, .45);
+}
+
+/* ── 시계 + 게이지 ───────────────────────────────────── */
+#clock {
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #E2A6FF 0%, #A855F7 55%, #7A2BD0 100%);
+  border: 0.5cqw solid #F2E2FF;
+  box-shadow: 0 0 1.2cqw rgba(190, 120, 255, .55);
+}
+
+/* 시침·분침 */
+#clock::before, #clock::after {
+  content: "";
+  position: absolute;
+  left: 50%; top: 50%;
+  background: #fff;
+  border-radius: 999px;
+  transform-origin: 50% 100%;
+}
+#clock::before { width: 0.7cqw; height: 24%; transform: translate(-50%, -100%) rotate(35deg); }
+#clock::after  { width: 0.7cqw; height: 32%; transform: translate(-50%, -100%) rotate(-95deg); }
+
+#gauge {
+  border-radius: 999px;
+  background: rgba(30, 14, 66, 0.55);
+  border: 0.28cqw solid rgba(170, 140, 230, 0.5);
+  overflow: hidden;
+}
+
+#gauge-fill {
+  width: 100%;
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(180deg, #D45BFF 0%, #A430F5 55%, #8B1FE0 100%);
+  transform-origin: left center;
+}
+
+/* 잔여 시간 경고 — 원작은 시계와 게이지가 함께 하얗게 깜빡인다 */
+#stage.low-time #clock,
+#stage.low-time #gauge { animation: lowtime .5s steps(1, end) infinite; }
+
+@keyframes lowtime {
+  0%, 49%  { filter: none; }
+  50%, 99% { filter: brightness(2.4) saturate(.25); }
+}
+
+/* ── 보드 ────────────────────────────────────────────── */
+/* 원작 보드는 "칸 + 투명 간격"이 아니라 밝은 격자에 어두운 구멍이 뚫린 한 장이다.
+   그래서 보드 전체를 이미지로 깔고, .cell 은 타일이 들어앉을 투명한 자리로만 쓴다. */
+#board {
+  background: url("../assets/board.png") center / 100% 100% no-repeat;
+}
+
+.cell { position: relative; }
+
+.cell > .tile {
+  position: absolute;
+  inset: 0;
+  background-size: 100% 100%;
+}
+
+/* ── 트레이 ──────────────────────────────────────────── */
+.slot {
+  border-radius: 3.2cqw;
+  background: rgba(26, 10, 60, 0.55);
+  border: 0.3cqw solid rgba(150, 115, 215, 0.5);
+}
+
+/* ── block change 버튼 ───────────────────────────────── */
+#block-change {
+  font: inherit;
+  font-size: 4.3cqw;
+  padding: 0;
+  display: grid;
+  place-items: center;
+  white-space: nowrap;
+  border: 0.5cqw solid transparent;
+  border-radius: 999px;
+  background:
+    linear-gradient(#fff, #fff) padding-box,
+    linear-gradient(95deg, #35D8F5 0%, #A93BF0 55%, #E23FD0 100%) border-box;
+  background-clip: padding-box, border-box;
+  box-shadow: 0 0 1.4cqw rgba(160, 90, 240, .5);
+  cursor: pointer;
+}
+
+#block-change::after {
+  content: "block change";
+  background: linear-gradient(95deg, #22C8EE 0%, #9B3BF0 55%, #E23FD0 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+#block-change:disabled { opacity: .55; cursor: default; }
+
+/* ── 배너 (카운트다운 / NICE! / PERFECT! / GAME OVER) ── */
+#banner { display: grid; place-items: center; }

@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<title>Block Game</title>
+<link rel="stylesheet" href="css/layout.css">
+<link rel="stylesheet" href="css/ui.css">
+</head>
+<body>
+
+<div id="stage">
+  <div id="score-pill">
+    <span id="score-coin">h</span>
+    <span id="score">0</span>
+  </div>
+
+  <div id="clock"></div>
+
+  <div id="gauge">
+    <div id="gauge-fill"></div>
+  </div>
+
+  <div id="board"></div>
+
+  <div class="slot" data-slot="0"></div>
+  <div class="slot" data-slot="1"></div>
+  <div class="slot" data-slot="2"></div>
+
+  <button id="block-change" type="button" aria-label="block change"></button>
+
+  <div id="drag-layer"></div>
+  <div id="banner"></div>
+</div>
+
+<script src="js/render.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>

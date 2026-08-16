@@ -1,0 +1,66 @@
+/* 모든 좌표는 원작 영상 실측값의 비율이다. docs/analysis.md 3절 참조.
+   무대는 1080x2340 비율을 유지한 채 뷰포트에 맞춰 스케일된다. */
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  height: 100%;
+  background: #150a2e;
+  overscroll-behavior: none;
+}
+
+body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  -webkit-tap-highlight-color: transparent;
+}
+
+#stage {
+  position: relative;
+  width:  min(100vw, calc(100dvh * 1080 / 2340));
+  height: min(100dvh, calc(100vw * 2340 / 1080));
+  container-type: size;
+  container-name: stage;
+  overflow: hidden;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+
+  /* 배경 교체는 이 한 줄만 바꾸면 된다. 그라디언트는 이미지 로딩 전/실패 시 폴백. */
+  background:
+    url("../assets/bg.png") center / cover no-repeat,
+    linear-gradient(178deg, #3E1466 0%, #4E109A 45%, #3A1796 78%, #241C6E 100%);
+}
+
+#stage > * { position: absolute; }
+
+/* ── HUD ─────────────────────────────────────────────── */
+#score-pill { left: 1.85%;  top: 4.40%; width: 31.02%; height: 3.72%; }
+#clock      { left: 61.11%; top: 4.27%; width: 8.15%;  height: 3.85%; }
+#gauge      { left: 69.63%; top: 4.62%; width: 27.59%; height: 1.79%; }
+
+/* ── 보드 ────────────────────────────────────────────── */
+#board {
+  left: 10.28%; top: 17.78%; width: 79.63%; height: 36.75%;
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  grid-template-rows: repeat(8, 1fr);
+  gap: 0.864%;                 /* 8칸 + 7간격 = 100% */
+}
+
+/* ── 트레이 ──────────────────────────────────────────── */
+.slot { top: 60.56%; width: 24.44%; height: 11.54%; }
+.slot[data-slot="0"] { left: 10.28%; }
+.slot[data-slot="1"] { left: 38.15%; }
+.slot[data-slot="2"] { left: 66.02%; }
+
+/* ── 버튼 ────────────────────────────────────────────── */
+#block-change { left: 30.09%; top: 78.12%; width: 40.28%; height: 4.27%; }
+
+/* ── 오버레이 ────────────────────────────────────────── */
+#drag-layer, #banner {
+  left: 0; top: 0; width: 100%; height: 100%;
+  pointer-events: none;
+}
