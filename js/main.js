@@ -15,7 +15,11 @@ var CONFIG = {
 
   TIME_BONUS_AT: [6000, 9000],   // 이 점수를 넘는 순간 효과음만 (시간은 안 준다)
 
-  BLOCK_CHANGE_MS: 1500    // block change 리프레시 대기
+  BLOCK_CHANGE_MS: 1500,   // block change 리프레시 대기
+
+  // 드래그 중 블록을 손가락보다 위로 띄우는 양 (무대 가로폭 비율).
+  // 0 = 원작대로 잡은 지점 그대로. 손가락에 가려 안 보이면 0.06 정도로 올린다.
+  DRAG_LIFT: 0
 };
 
 var Game = (function () {
@@ -32,7 +36,20 @@ var Game = (function () {
   }
 
   function rerollTray() {
+    Drag.cancel();
     tray = [null, null, null];
+    refillTray();
+  }
+
+  /** 블록을 보드에 놓은 뒤. 점수·연출은 4단계에서 붙인다. */
+  function onPlace(slot, piece, r, c) {
+    Board.place(piece, r, c);
+    tray[slot] = null;
+
+    var lines = Board.fullLines();
+    if (lines.rows.length || lines.cols.length) Board.clearLines(lines);
+
+    Render.paintBoard(Board.get);
     refillTray();
   }
 
@@ -61,7 +78,9 @@ var Game = (function () {
   }
 
   function init() {
+    Board.reset(CONFIG.BOARD);
     Render.buildBoard(CONFIG.BOARD);
+    Drag.init({ getPiece: function (i) { return tray[i]; }, onPlace: onPlace });
     Render.setScore(0);
     Render.setGauge(1);
     refillTray();               // 시작 화면 뒤로 미리 보이게

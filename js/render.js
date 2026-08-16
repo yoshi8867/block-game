@@ -10,9 +10,11 @@ var Render = (function () {
 
   var boardEl = document.getElementById("board");
   var stageEl = document.getElementById("stage");
+  var N = 0;
 
   function buildBoard(size) {
     boardEl.textContent = "";
+    N = size;
     for (var r = 0; r < size; r++) {
       for (var c = 0; c < size; c++) {
         var d = document.createElement("div");
@@ -59,6 +61,26 @@ var Render = (function () {
     }
   }
 
+  /** 보드 전체를 다시 그린다. 64칸뿐이라 델타 추적할 값어치가 없다. */
+  function paintBoard(get) {
+    for (var r = 0; r < N; r++) {
+      for (var c = 0; c < N; c++) {
+        var el = boardEl.children[r * N + c];
+        var data = get(r, c);
+        var want = data ? tileUrl(data.color, data.h) : "";
+        if (el.dataset.tile === want) continue;
+        el.dataset.tile = want;
+        el.textContent = "";
+        if (data) {
+          var t = document.createElement("div");
+          t.className = "tile";
+          t.style.backgroundImage = want;
+          el.appendChild(t);
+        }
+      }
+    }
+  }
+
   function setScore(n) {
     document.getElementById("score").textContent = n;
   }
@@ -76,6 +98,7 @@ var Render = (function () {
     CELL: CELL,
     PITCH: PITCH,
     buildBoard: buildBoard,
+    paintBoard: paintBoard,
     pieceEl: pieceEl,
     drawTray: drawTray,
     setScore: setScore,

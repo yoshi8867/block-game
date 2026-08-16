@@ -28,8 +28,8 @@
 |---|---|---|
 | 1 | 뼈대 + 레이아웃 | ✅ 완료 |
 | 2 | 블록 35종 + 트레이 렌더 | ✅ 완료 |
-| 3 | **드래그 & 배치 판정** | ⬜ 다음 |
-| 4 | 줄 완성 · 삭제 · 점수 · NICE/PERFECT · 파편 | ⬜ |
+| 3 | 드래그 & 배치 판정 | ✅ 완료 |
+| 4 | **점수 · NICE/PERFECT · 파편 연출** | ⬜ 다음 |
 | 5 | 타이머 · 인트로 카운트다운 · 경고 깜빡임 · 종료 | ⬜ |
 | 6 | 오디오 전체 연결 | ⬜ |
 | 7 | block change (1.5초 대기) | ⬜ |
@@ -59,11 +59,15 @@ block-game/
 └── todo.md             이 파일
 ```
 
-### 아직 만들지 않은 파일 (3단계 이후)
-- `js/board.js` — 8×8 모델, 배치 가능 판정, 줄 완성 탐지, 점수 계산
-- `js/drag.js` — 포인터 드래그 · 스냅 판정
+3단계에서 `js/board.js`(8×8 모델) · `js/drag.js`(포인터 드래그·스냅) ·
+`tools/board_test.js`(`node tools/board_test.js`) · `tools/bg_fit.py` 추가.
+
+줄 완성 시 지우는 것까지는 3단계에 들어갔다 (안 그러면 보드가 차서 드래그를 못 본다).
+**점수·NICE/PERFECT·파편 연출이 4단계 몫이다.** `Board.countH(lines)` 는
+`clearLines` 보다 **먼저** 불러야 한다 (지우고 나면 셀 수 없다).
+
+### 아직 만들지 않은 파일
 - `js/audio.js` — 사운드 로딩/재생
-- `test.html` — board.js 자체 검증 (배치·줄삭제·점수)
 
 ---
 
@@ -174,9 +178,11 @@ Pages 가 자동 빌드한다 (1분 내외).
 
 ### 리소스 재생성
 ```bash
-python tools/bg_gen.py        # 배경
+python tools/bg_fit.py        # 배경 (hgame/bg_source_ai.png 를 1080x2340 에 맞춘다)
 python tools/board_crop.py    # 격자 (hgame/docs/bg_source.png 필요)
+node   tools/board_test.js    # 보드 모델 자체 검증
 ```
+`tools/bg_gen.py` 는 AI 배경을 받기 전에 직접 그리던 것. 이제 안 쓴다.
 
 ---
 
@@ -203,5 +209,5 @@ python tools/board_crop.py    # 격자 (hgame/docs/bg_source.png 필요)
   `X./XX`→pink, `XX/X.`→cyan, `.X/XX/X.`→purple, `XX/.X/.X`→pink
 - **h 확률 10%**: 체감으로 정한 값. `CONFIG.H_CHANCE` 로 조정
 - **최고 점수 저장**: 사용자가 "종료 화면 따로 없다"고 했으므로 일단 넣지 않는다
-- **배경 이미지**: 현재 `tools/bg_gen.py` 로 직접 생성한 것.
-  원작 배경 원판이 생기면 `assets/bg.png` 만 교체하면 된다
+- **드래그 리프트(`CONFIG.DRAG_LIFT`)**: 지금 0 — 잡은 지점 그대로다(사용자 지시).
+  폰에서 손가락에 가려 안 보이면 0.06 정도로 올린다

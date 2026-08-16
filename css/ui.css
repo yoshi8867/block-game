@@ -114,6 +114,12 @@
 /* 트레이/드래그용 블록 묶음 */
 .block { position: absolute; }
 
+#drag-layer { z-index: 40; }
+
+.block.dragging {
+  filter: drop-shadow(0 1cqw 1.4cqw rgba(0, 0, 0, .5));
+}
+
 .slot > .block {
   left: 50%;
   top: 50%;
