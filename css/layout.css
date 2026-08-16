@@ -37,11 +37,19 @@ body {
 #stage > * { position: absolute; }
 
 /* ── HUD ─────────────────────────────────────────────── */
-#score-pill { left: 1.85%;  top: 4.40%; width: 31.02%; height: 3.72%; }
-#clock      { left: 61.11%; top: 4.27%; width: 8.15%;  height: 3.85%; }
-#gauge      { left: 69.63%; top: 4.62%; width: 27.59%; height: 1.79%; }
+/* 셋 다 세로 중심이 y=145.5px(6.22%)로 같다 — 원작 실측 */
+#score-pill { left: 1.11%;  top: 4.27%; width: 31.39%; height: 3.89%; }
+#clock      { left: 61.94%; top: 4.34%; width: 8.15%;  height: 3.76%; }
+#gauge      { left: 69.63%; top: 5.32%; width: 27.59%; height: 1.79%; }
 
 /* ── 보드 ────────────────────────────────────────────── */
+/* 격자 이미지는 셀 영역보다 10px(각 변) 크다. 외곽선이 잘리지 않도록
+   이미지는 별도 레이어에 깔고, 그리드는 셀 영역에 정확히 맞춘다. */
+#board-frame {
+  left: 9.352%; top: 17.350%; width: 81.481%; height: 37.607%;
+  background: url("../assets/board.png") center / 100% 100% no-repeat;
+}
+
 #board {
   left: 10.28%; top: 17.78%; width: 79.63%; height: 36.75%;
   display: grid;

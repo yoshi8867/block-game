@@ -8,18 +8,19 @@
 }
 
 /* ── 점수 알약 ───────────────────────────────────────── */
+/* 원작은 자릿수와 무관하게 점수 텍스트의 중심이 항상 같은 x에 온다.
+   실측: 알약 x 12..350 안에서 텍스트 중심 213.75 = 알약 폭의 59.5% */
 #score-pill {
-  display: flex;
-  align-items: center;
-  gap: 2cqw;
-  padding-left: 0.6cqw;
   border-radius: 999px;
   background: rgba(24, 8, 54, 0.62);
   border: 0.28cqw solid rgba(150, 110, 220, 0.55);
 }
 
 #score-coin {
-  flex: none;
+  position: absolute;
+  left: 14.6%;
+  top: 50%;
+  transform: translate(-50%, -50%);
   width: 7.3cqw;
   height: 7.3cqw;
   border-radius: 50%;
@@ -30,7 +31,24 @@
   box-shadow: inset 0 -0.3cqw 0.5cqw rgba(0, 0, 0, .35);
 }
 
+/* h 옆의 점 — 보너스 칸 표기와 같은 모양 */
+#score-coin::after {
+  content: "";
+  position: absolute;
+  right: 20%;
+  top: 20%;
+  width: 1.15cqw;
+  height: 1.15cqw;
+  border-radius: 50%;
+  background: #fff;
+}
+
 #score {
+  position: absolute;
+  left: 59.5%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  white-space: nowrap;
   font-size: 5.7cqw;
   letter-spacing: 0.1cqw;
   text-shadow: 0 0.25cqw 0.4cqw rgba(0, 0, 0, .45);
@@ -53,8 +71,8 @@
   border-radius: 999px;
   transform-origin: 50% 100%;
 }
-#clock::before { width: 0.7cqw; height: 24%; transform: translate(-50%, -100%) rotate(35deg); }
-#clock::after  { width: 0.7cqw; height: 32%; transform: translate(-50%, -100%) rotate(-95deg); }
+#clock::before { width: 0.55cqw; height: 27%; border-radius: 0; transform: translate(-50%, -100%) rotate(22deg); }
+#clock::after  { width: 0.55cqw; height: 36%; border-radius: 0; transform: translate(-50%, -100%) rotate(-102deg); }
 
 #gauge {
   border-radius: 999px;
@@ -82,11 +100,8 @@
 
 /* ── 보드 ────────────────────────────────────────────── */
 /* 원작 보드는 "칸 + 투명 간격"이 아니라 밝은 격자에 어두운 구멍이 뚫린 한 장이다.
-   그래서 보드 전체를 이미지로 깔고, .cell 은 타일이 들어앉을 투명한 자리로만 쓴다. */
-#board {
-  background: url("../assets/board.png") center / 100% 100% no-repeat;
-}
-
+   그래서 격자는 #board-frame 에 이미지로 깔고(layout.css),
+   .cell 은 타일이 들어앉을 투명한 자리로만 쓴다. */
 .cell { position: relative; }
 
 .tile {

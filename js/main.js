@@ -67,6 +67,12 @@ var Game = (function () {
     refillTray();               // 시작 화면 뒤로 미리 보이게
 
     document.getElementById("start").addEventListener("click", start);
+
+    // ?dev — 시작 화면을 건너뛴다. 레이아웃 대조용.
+    if (/[?&]dev\b/.test(location.search)) {
+      stage.classList.add("started");
+      Render.setScore(25815);
+    }
     // 정식 동작(1.5초 대기)은 7단계에서. 지금은 즉시 리롤로 블록 확인용.
     document.getElementById("block-change").addEventListener("click", rerollTray);
   }
