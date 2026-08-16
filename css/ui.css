@@ -89,10 +89,20 @@
 
 .cell { position: relative; }
 
-.cell > .tile {
+.tile {
   position: absolute;
-  inset: 0;
   background-size: 100% 100%;
+}
+
+.cell > .tile { inset: 0; }
+
+/* 트레이/드래그용 블록 묶음 */
+.block { position: absolute; }
+
+.slot > .block {
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
 }
 
 /* ── 트레이 ──────────────────────────────────────────── */
@@ -132,3 +142,37 @@
 
 /* ── 배너 (카운트다운 / NICE! / PERFECT! / GAME OVER) ── */
 #banner { display: grid; place-items: center; }
+
+/* ── 시작 화면 ───────────────────────────────────────── */
+/* 첫 탭이 있어야 전체화면 진입과 오디오 재생이 허용된다 */
+#start {
+  left: 0; top: 0; width: 100%; height: 100%;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 4cqw;
+  background: rgba(12, 5, 30, .55);
+  backdrop-filter: blur(2px);
+  cursor: pointer;
+  z-index: 50;
+}
+
+#start-title {
+  font-size: 16cqw;
+  letter-spacing: 0.6cqw;
+  background: linear-gradient(100deg, #35D8F5 0%, #C46BFF 45%, #FF5AC8 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  filter: drop-shadow(0 0.6cqw 1cqw rgba(0, 0, 0, .5));
+}
+
+#start-tap {
+  font-size: 5cqw;
+  color: #E7DAFF;
+  animation: blink 1.2s ease-in-out infinite;
+}
+
+@keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: .35; } }
+
+#stage.started #start { display: none; }

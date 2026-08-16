@@ -18,10 +18,60 @@ var CONFIG = {
   BLOCK_CHANGE_MS: 1500    // block change 리프레시 대기
 };
 
-(function () {
+var Game = (function () {
   "use strict";
 
-  Render.buildBoard(CONFIG.BOARD);
-  Render.setScore(0);
-  Render.setGauge(1);
+  var stage = document.getElementById("stage");
+  var tray = [null, null, null];
+
+  function refillTray() {
+    for (var i = 0; i < 3; i++) {
+      if (!tray[i]) tray[i] = Blocks.random(CONFIG.H_CHANCE);
+    }
+    Render.drawTray(tray, CONFIG.TRAY_SCALE);
+  }
+
+  function rerollTray() {
+    tray = [null, null, null];
+    refillTray();
+  }
+
+  /** 브라우저 주소창/하단바를 숨긴다. 사용자 제스처 안에서만 허용된다. */
+  function goFullscreen() {
+    var el = document.documentElement;
+    var req = el.requestFullscreen || el.webkitRequestFullscreen;
+    if (req) {
+      try {
+        var p = req.call(el, { navigationUI: "hide" });
+        if (p && p.then) p.then(lockPortrait, function () {});
+      } catch (e) { /* 지원 안 하면 그냥 넘어간다 */ }
+    }
+  }
+
+  function lockPortrait() {
+    if (screen.orientation && screen.orientation.lock) {
+      screen.orientation.lock("portrait").catch(function () {});
+    }
+  }
+
+  function start() {
+    stage.classList.add("started");
+    goFullscreen();
+    refillTray();
+  }
+
+  function init() {
+    Render.buildBoard(CONFIG.BOARD);
+    Render.setScore(0);
+    Render.setGauge(1);
+    refillTray();               // 시작 화면 뒤로 미리 보이게
+
+    document.getElementById("start").addEventListener("click", start);
+    // 정식 동작(1.5초 대기)은 7단계에서. 지금은 즉시 리롤로 블록 확인용.
+    document.getElementById("block-change").addEventListener("click", rerollTray);
+  }
+
+  return { init: init, rerollTray: rerollTray };
 })();
+
+Game.init();

@@ -4,6 +4,14 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
 <title>Block Game</title>
+
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#150a2e">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="apple-touch-icon" href="assets/icon-192.png">
+
 <link rel="stylesheet" href="css/layout.css">
 <link rel="stylesheet" href="css/ui.css">
 </head>
@@ -31,8 +39,14 @@
 
   <div id="drag-layer"></div>
   <div id="banner"></div>
+
+  <div id="start">
+    <div id="start-title">BLOCK</div>
+    <div id="start-tap">TAP TO START</div>
+  </div>
 </div>
 
+<script src="js/blocks.js"></script>
 <script src="js/render.js"></script>
 <script src="js/main.js"></script>
 </body>
