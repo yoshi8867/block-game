@@ -3,7 +3,11 @@
 var Sound = (function () {
   "use strict";
 
-  var NAMES = ["intro", "bgm_loop", "sfx_lineclear", "sfx_nice",
+  /* sfx_lineclear 는 넣지 않는다. 원본 wav 를 원본 트랙과 상호상관으로 대조해 보니
+     sfx_nice(8.749~10.169초) 안에 sfx_lineclear(9.250~10.100초)가 통째로 들어 있다.
+     즉 '줄 삭제음'이 아니라 nice 소리의 뒷부분을 잘라낸 것이다.
+     nice/perfect 두 음원 모두 앞머리 0.04~0.10초에 줄 터지는 소리를 이미 갖고 있다. */
+  var NAMES = ["intro", "bgm_loop", "sfx_nice",
                "sfx_perfect", "sfx_timebonus", "sfx_gameover"];
 
   var el = {};

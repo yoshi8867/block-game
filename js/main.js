@@ -67,7 +67,8 @@ var Game = (function () {
       Render.paintBoard(Board.get);
       FX.burst(cleared);
       FX.showBanner(hits ? "perfect" : "nice");
-      Sound.play("sfx_lineclear");                        // 판정음과 겹쳐서 난다
+      // nice/perfect 음원 앞머리에 줄 터지는 소리가 이미 들어 있다.
+      // 따로 lineclear 를 겹치면 같은 소리가 두 번 난다 (아래 audio.js 주석 참조).
       Sound.play(hits ? "sfx_perfect" : "sfx_nice");
     } else {
       Render.paintBoard(Board.get);

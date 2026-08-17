@@ -134,7 +134,7 @@ iOS/사파리는 요소마다 제스처 안에서 재생된 적이 있어야 나
 |---|---|
 | `intro.mp3` | 카운트다운 `3·2·1·GO!` |
 | `bgm_loop.mp3` | intro 직후부터 루프, 게임 종료 시 정지 |
-| `sfx_lineclear.mp3` | 줄이 터질 때 |
+| ~~`sfx_lineclear`~~ | **미사용** — `sfx_nice` 의 일부라서 겹쳐 틀면 두 번 난다 |
 | `sfx_nice.mp3` / `sfx_perfect.mp3` | 각 판정 시 |
 | `sfx_timebonus.mp3` | 점수가 **6,000 / 9,000** 을 넘는 순간 각 1회 |
 | `sfx_gameover.mp3` | 시간 종료 |
