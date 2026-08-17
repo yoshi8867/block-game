@@ -218,13 +218,15 @@ var Game = (function () {
     });
 
     // ?auto=fx|end|clear — 헤드리스 스크린샷용. 0.9초 뒤 해당 테스트 버튼을 누른다.
-    var auto = /[?&]auto=([a-z]+)/.exec(location.search);
+    var auto = /[?&]auto=([a-z,]+)/.exec(location.search);
     if (auto) {
-      setTimeout(function () {
-        var b = document.getElementById("dev-" + auto[1]) ||
-                document.getElementById(auto[1]);
-        if (b) b.click();
-      }, 900);
+      auto[1].split(",").forEach(function (name, i) {
+        setTimeout(function () {
+          var b = document.getElementById("dev-" + name) ||
+                  document.getElementById(name);
+          if (b) b.click();
+        }, 900 + i * 400);
+      });
     }
   }
 
