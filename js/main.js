@@ -17,6 +17,9 @@ var CONFIG = {
 
   BLOCK_CHANGE_MS: 1500,   // block change 리프레시 대기
   COUNT_MS: 1000,          // 카운트다운 한 단계 (원작 실측 정확히 1.0초)
+  // intro.mp3 를 카운트다운보다 이만큼 늦게 튼다. 음원에 '3' 비프가 없어서
+  // 그냥 틀면 한 칸씩 밀린다. 3×COUNT_MS − 2060ms(긴 '띠—' 위치) = 940ms
+  INTRO_DELAY_MS: 940,
 
   BGM_VOLUME: 0.45,
   SFX_VOLUME: 1.0,
@@ -107,9 +110,10 @@ var Game = (function () {
     }
   }
 
-  /** 실제 시간은 주지 않는다. 효과음만. */
+  /** 실제 시간은 주지 않는다. 소리와 글자만 (사용자 확정). */
   function timeBonus() {
     Sound.play("sfx_timebonus");
+    FX.showTimeBonus();
   }
 
   /* ── 타이머 ────────────────────────────────────────── */
@@ -199,7 +203,28 @@ var Game = (function () {
     newGame();
   }
 
+  /* 처음 쓰는 이미지는 그때 받아서 디코드하느라 한 박자 늦게 떴다 —
+     첫 NICE!/PERFECT! 배너가 툭 튀고, 블록의 마지막 칸이 뒤늦게 채워졌다.
+     페이지가 열릴 때 전부 받아 디코드까지 끝내 둔다.
+     keep 에 담아 두지 않으면 GC 가 디코드 결과를 버려서 도로 늦어진다. */
+  var keep = [];
+
+  function preloadImages() {
+    var names = ["banner_nice", "banner_perfect", "banner_timebonus",
+                 "cd3", "cd2", "cd1", "cdgo", "gameover"];
+    ["purple", "cyan", "yellow", "pink"].forEach(function (c) {
+      names.push("cell_" + c, "cell_" + c + "_h");
+    });
+    names.forEach(function (n) {
+      var img = new Image();
+      img.src = "assets/" + n + ".png";
+      if (img.decode) img.decode().catch(function () {});
+      keep.push(img);
+    });
+  }
+
   function init() {
+    preloadImages();
     Board.reset(CONFIG.BOARD);
     Render.buildBoard(CONFIG.BOARD);
     Drag.init({ getPiece: function (i) { return tray[i]; }, onPlace: onPlace });
@@ -219,7 +244,7 @@ var Game = (function () {
     }
     changeBtn.addEventListener("click", blockChange);
 
-    // 테스트용 툴바 (임시)
+    /* 테스트용 툴바. index.html 의 #devbar 주석과 짝이다 — 다시 쓰려면 둘 다 푼다.
     var pull = document.getElementById("dev-pull");
     pull.addEventListener("click", function () {
       CONFIG.EDGE_PULL = CONFIG.EDGE_PULL ? 0 : 1;
@@ -248,6 +273,7 @@ var Game = (function () {
     document.getElementById("dev-low").addEventListener("click", function () {
       endAt = performance.now() + CONFIG.LOW_TIME_SECONDS * 1000;
     });
+    */
 
     // ?auto=fx|end|clear — 헤드리스 스크린샷용. 0.9초 뒤 해당 테스트 버튼을 누른다.
     var auto = /[?&]auto=([a-z,-]+)/.exec(location.search);

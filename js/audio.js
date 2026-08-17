@@ -12,6 +12,7 @@ var Sound = (function () {
 
   var el = {};
   var ready = false;
+  var introTimer = 0;
 
   for (var i = 0; i < NAMES.length; i++) {
     var a = new Audio("audio/" + NAMES[i] + ".mp3");
@@ -49,20 +50,26 @@ var Sound = (function () {
 
   function play(name) {
     var a = el[name];
-    a.currentTime = 0;
+    // 아직 한 번도 안 튼 요소에 currentTime 을 쓰면 브라우저에 따라 던진다.
+    if (a.currentTime) a.currentTime = 0;
     var p = a.play();
     if (p && p.catch) p.catch(function () {});
   }
 
-  /** 인트로를 틀고, 끝나면 바로 BGM 루프로 넘어간다 (원작 그대로) */
+  /** 인트로를 틀고, 끝나면 바로 BGM 루프로 넘어간다 (원작 그대로).
+      음원의 '띠' 는 0.050 / 1.060 / 2.060(긴소리) 세 번뿐이다 — '3' 에 해당하는
+      첫 비프가 없다. 그래서 카운트다운 텍스트보다 CONFIG.INTRO_DELAY_MS 만큼
+      늦게 틀어 긴 '띠—' 가 GO! 와 겹치게 한다. (tools/intro_beeps.py 로 실측) */
   function startMusic() {
+    clearTimeout(introTimer);
     el.bgm_loop.pause();
     el.bgm_loop.currentTime = 0;
     el.intro.onended = function () { play("bgm_loop"); };
-    play("intro");
+    introTimer = setTimeout(function () { play("intro"); }, CONFIG.INTRO_DELAY_MS);
   }
 
   function stopMusic() {
+    clearTimeout(introTimer);
     el.intro.onended = null;
     el.intro.pause();
     el.bgm_loop.pause();

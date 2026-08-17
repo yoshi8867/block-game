@@ -211,6 +211,9 @@
 .banner-art.perfect { width: 74.26cqw; }
 .banner-art.nice { width: 39.07cqw; }
 
+/* TIME BONUS! 는 NICE!/PERFECT! 한 단 아래에 따로 뜬다 (원작 실측 y 719.5 = 30.75%) */
+.banner-art.timebonus { top: 30.75%; width: 88.43cqw; }
+
 @keyframes bannerPop {
   0%        { transform: translate(-50%, -50%) scale(.85); }
   45%       { transform: translate(-50%, -50%) scale(1.01); }
@@ -240,21 +243,18 @@
    글자는 **타일보다 아래**에 깔려서 블록에 가려진다 — 원작 그대로다. */
 #stage.over #flash { animation: none; opacity: .65; }
 
-/* #board 에 쌓임 맥락을 만들어 z-index:-1 이 격자 이미지까지 뚫고 내려가지 않게 한다 */
-#board { z-index: 0; }
-
-/* #board 안에 있으므로 좌표는 보드 기준이다.
-   화면 (50%, 49.6%) = 보드의 (49.88%, 86.6%). 폭은 화면의 59.3% (실측 640/1080).
+/* 화면 정중앙 (50%, 49.61%). 폭은 화면의 59.3% (실측 640/1080).
+   원작은 타일 뒤에 깔지만 가려서 안 보인다는 지적에 따라 맨 앞으로 올렸다
+   (#flash z-index 55 보다 위).
 
    원작은 이 워드아트를 **반투명으로** 얹는다. 프레임 실측 색과 맞춰 보면
    saturate(2.2) + opacity .5 로 채움(#900F31 vs 실측 #900F32)과
    검은 외곽선(#10052A vs 실측 #100628)이 동시에 맞는다.
    더 쨍하게 가고 싶으면 이 두 줄만 지우면 된다. */
 #over-title {
-  position: absolute;
-  z-index: -1;
-  left: 49.88%;
-  top: 86.6%;
+  z-index: 60;
+  left: 50%;
+  top: 49.61%;
   transform: translate(-50%, -50%);
   display: none;
   width: 59.3cqw;

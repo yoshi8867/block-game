@@ -30,9 +30,7 @@
   </div>
 
   <div id="board-frame"></div>
-  <div id="board">
-  <img id="over-title" src="assets/gameover.png" alt="GAME OVER">
-</div>
+  <div id="board"></div>
 
   <div class="slot" data-slot="0"></div>
   <div class="slot" data-slot="1"></div>
@@ -40,7 +38,7 @@
 
   <button id="block-change" type="button" aria-label="block change"></button>
 
-  <!-- ponytail: 테스트용. 판정 튜닝 끝나면 이 블록과 #devbar CSS·JS 를 지운다 -->
+  <!-- 테스트용 툴바. 다시 쓰려면 이 주석을 풀고 main.js 의 devbar 블록도 같이 푼다.
 <div id="devbar">
   <button id="dev-pull" type="button">PULL ON</button>
   <button id="dev-clear" type="button">CLEAR</button>
@@ -48,10 +46,12 @@
   <button id="dev-low" type="button">LOW</button>
   <button id="dev-end" type="button">END</button>
 </div>
+-->
 
 <div id="drag-layer"></div>
   <div id="flash"></div>
 <div id="banner"></div>
+<img id="over-title" src="assets/gameover.png" alt="GAME OVER">
 
 <button id="retry" type="button" aria-label="retry"></button>
 

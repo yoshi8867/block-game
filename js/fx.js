@@ -45,6 +45,16 @@ var FX = (function () {
     setTimeout(function () { if (img.parentNode) img.remove(); }, BANNER_MS);
   }
 
+  /* 원작에선 NICE!/PERFECT! **아래**에 겹쳐 뜬다. 그래서 배너를 지우지 않고 얹는다.
+     onPlace 가 showBanner 를 먼저 부르므로 순서는 저절로 맞는다. */
+  function showTimeBonus() {
+    var img = document.createElement("img");
+    img.src = "assets/banner_timebonus.png";
+    img.className = "banner-art timebonus";
+    bannerEl.appendChild(img);
+    setTimeout(function () { if (img.parentNode) img.remove(); }, BANNER_MS);
+  }
+
   /** cells: Board.clearLines() 가 돌려준 [{r,c,color,h}] */
   function burst(cells) {
     for (var i = 0; i < cells.length; i++) {
@@ -68,5 +78,6 @@ var FX = (function () {
     setTimeout(function () { if (el.parentNode) el.remove(); }, SHARD_MS);
   }
 
-  return { showBanner: showBanner, burst: burst, showCount: showCount, clear: clear };
+  return { showBanner: showBanner, showTimeBonus: showTimeBonus,
+           burst: burst, showCount: showCount, clear: clear };
 })();

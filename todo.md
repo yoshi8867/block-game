@@ -34,13 +34,15 @@
 | 6 | 오디오 전체 연결 | ✅ 완료 |
 | 7 | block change (1.5초 대기) | ✅ 완료 |
 | — | GitHub Pages 배포 | ✅ (선행 완료, 매 단계 push) |
-| — | **마무리: 테스트용 코드 제거** | ⬜ 다음 |
+| — | 마무리: 테스트용 버튼 감추기 | ✅ 주석 처리 |
 
-7단계로 계획한 기능은 전부 끝났다. 남은 건 아래 "마무리" 와 7절의 미해결 항목뿐이다.
+7단계로 계획한 기능은 전부 끝났다. 남은 건 7절의 미해결 항목뿐이다.
 
-### 마무리 때 지울 것 (사용자 확인 후)
-- `index.html` 의 `#devbar` 블록, `css/ui.css` 의 `#devbar` 규칙, `main.js` 의 dev 버튼 핸들러
-- `?dev`(시작화면 건너뛰기 + 점수 25815) · `?auto=`(자동 클릭) 훅
+### 테스트용 코드 (지금은 주석 처리)
+`#devbar` 는 `index.html` 과 `js/main.js` 양쪽에 주석으로 남아 있다 — **둘 다 같이 풀어야**
+동작한다(한쪽만 풀면 `getElementById` 가 null 을 준다). `css/ui.css` 의 `#devbar` 규칙은
+마크업이 없으면 아무 일도 안 하므로 그대로 뒀다.
+`?dev`(시작화면 건너뛰기 + 점수 25815) 와 `?auto=`(자동 클릭) 훅은 살아 있다.
 
 ---
 
@@ -129,9 +131,15 @@ iOS/사파리는 요소마다 제스처 안에서 재생된 적이 있어야 나
   움직임 없이 그냥 바뀐다. 영상에서 잘라낸 이미지 (`tools/intro_crop.py`).
   타이머는 `GO!` 가 끝난 뒤 시작한다
 - 종료(원작 t=103.60 실측): 화면을 어둡게 덮지 **않는다**. 경고 비네트가 호흡을
-  멈추고 65%에서 정지하고, 보드·트레이가 그대로 보이며 화면 정중앙(50%, 49.6%)에
-  `GAME OVER` 가 뜬다. **글자는 타일보다 아래에 깔려 블록에 가려진다.**
+  멈추고 65%에서 정지하고, 보드·트레이가 그대로 보이며 화면 정중앙(50%, 49.61%)에
+  `GAME OVER` 가 뜬다. 원작은 글자를 타일 **아래**에 깔지만 가려서 안 보인다는
+  지적에 따라 맨 앞(z-index 60)으로 올렸다.
   원작엔 `RETRY` 가 없어서 `block change` 자리를 물려받게 했다
+- `TIME BONUS!`: 점수 임계를 넘는 순간 `NICE!`/`PERFECT!` **아래 단**(50%, 30.75%)에
+  겹쳐 뜬다. 배너와 같은 0.60초. 영상 26.60초에서 잘라냈다 (`tools/timebonus_crop.py`)
+- **이미지 선로딩**: 처음 쓰는 이미지가 그때 디코드되느라 배너가 툭 뜨고 블록의
+  마지막 칸이 늦게 채워졌다. `main.js` 의 `preloadImages()` 가 페이지 로드 때
+  전부 받아 `decode()` 까지 끝내고 `keep` 배열에 붙들어 둔다 (GC 되면 도로 늦어짐)
 - 줄 삭제: 타일이 사라지고 그 자리에서 **다이아몬드 파편 8개가 방사형으로** 튀며
   작아지고 흐려진다. 30fps 기준 2~3프레임(70~100ms)의 아주 짧은 연출
 - `NICE!`/`PERFECT!`: **위치 고정** — 무대 중앙 x, 보드 첫 줄 높이(50%, 19.81%).
@@ -145,11 +153,15 @@ iOS/사파리는 요소마다 제스처 안에서 재생된 적이 있어야 나
 | `bgm_loop.mp3` | intro 직후부터 루프, 게임 종료 시 정지 |
 | ~~`sfx_lineclear`~~ | **미사용** — `sfx_nice` 의 일부라서 겹쳐 틀면 두 번 난다 |
 | `sfx_nice.mp3` / `sfx_perfect.mp3` | 각 판정 시 |
-| `sfx_timebonus.mp3` | 점수가 **6,000 / 9,000** 을 넘는 순간 각 1회 |
+| `sfx_timebonus.mp3` | 점수가 **6,000 / 9,000** 을 넘는 순간 각 1회 (`TIME BONUS!` 글자 동반) |
 | `sfx_gameover.mp3` | 시간 종료 |
 
 - 줄 삭제 시 `lineclear` 와 `nice`/`perfect` 를 **겹쳐서** 재생
-- time bonus 는 **효과음만**. 실제 시간은 주지 않는다
+- time bonus 는 **효과음 + 글자만**. 실제 시간은 주지 않는다
+- `intro.mp3` 의 '띠' 는 **0.050 / 1.060 / 2.060(0.64초 긴소리)** 세 번뿐이다 —
+  `3` 에 해당하는 첫 비프가 없다. 그냥 틀면 긴 '띠—' 가 `1` 에 붙어 한 칸 밀린다.
+  그래서 `CONFIG.INTRO_DELAY_MS = 940`(=3000−2060) 만큼 늦게 튼다.
+  실측: `python tools/intro_beeps.py`
 - 브라우저가 사용자 제스처 전 재생을 막으므로 시작 화면 탭에서 오디오를 깨워야 한다
 
 ---
@@ -211,6 +223,9 @@ python tools/bg_fit.py        # 배경 (hgame/bg_source_ai.png 를 1080x2340 에
 python tools/board_crop.py    # 격자 (hgame/docs/bg_source.png 필요)
 python tools/banner_crop.py   # NICE! / PERFECT! 워드아트 (영상 필요)
 python tools/intro_crop.py    # 카운트다운 3 2 1 GO! (영상 필요)
+python tools/timebonus_crop.py # TIME BONUS! 워드아트 (영상 필요)
+python tools/intro_beeps.py   # intro.mp3 의 '띠' 위치 실측
+python tools/gameover_alpha.py # GAME OVER 워드아트 (사용자 제공 PNG 필요)
 node   tools/board_test.js    # 보드 모델 자체 검증
 ```
 `tools/bg_gen.py` 는 AI 배경을 받기 전에 직접 그리던 것. 이제 안 쓴다.

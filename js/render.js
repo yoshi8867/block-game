@@ -12,10 +12,6 @@ var Render = (function () {
   var stageEl = document.getElementById("stage");
   var N = 0;
 
-  /* GAME OVER 는 타일보다 아래에 깔린다(원작). 셀을 다시 만들 때 살려 둔다.
-     항상 마지막 자식이라 children[r*N+c] 인덱싱을 방해하지 않는다. */
-  var overTitle = document.getElementById("over-title");
-
   function buildBoard(size) {
     boardEl.textContent = "";
     N = size;
@@ -28,7 +24,6 @@ var Render = (function () {
         boardEl.appendChild(d);
       }
     }
-    boardEl.appendChild(overTitle);
   }
 
   function tileUrl(color, isH) {
