@@ -38,7 +38,6 @@ var Game = (function () {
   var endAt = 0;         // performance.now() 기준 종료 시각
   var raf = 0;
   var changeTimer = 0;   // block change 대기 중이면 setTimeout 핸들
-  var bonusTimer = 0;    // TIME BONUS! 를 미뤄 둔 setTimeout 핸들
   var changeBtn = document.getElementById("block-change");
 
   function refillTray() {
@@ -64,13 +63,11 @@ var Game = (function () {
     }, CONFIG.BLOCK_CHANGE_MS);
   }
 
-  /** 예약해 둔 것들을 취소한다 (새 판 / 게임오버). */
-  function cancelPending() {
+  /** 대기 중이던 리필을 취소한다 (새 판 / 게임오버). */
+  function cancelChange() {
     clearTimeout(changeTimer);
     changeTimer = 0;
     changeBtn.disabled = false;
-    clearTimeout(bonusTimer);
-    bonusTimer = 0;
   }
 
   /** 점수 = 800×줄 + 100×(완성한 줄의 h 칸) + 15×내려놓은 칸 */
@@ -111,16 +108,10 @@ var Game = (function () {
   }
 
   /** 실제 시간은 주지 않는다. 소리와 글자만 (사용자 확정).
-      줄을 지워서 점수가 넘어간 경우라면 NICE!/PERFECT! 소리가 아직 울리는 중이다.
-      말이 겹치지 않게 그게 끝난 뒤로 미룬다. 글자도 소리를 따라간다. */
+      원작대로 NICE!/PERFECT! 와 **동시에** 뜨고 소리도 겹쳐서 난다. */
   function timeBonus() {
-    var wait = Math.max(Sound.timeLeft("sfx_nice"), Sound.timeLeft("sfx_perfect"));
-    clearTimeout(bonusTimer);
-    bonusTimer = setTimeout(function () {
-      bonusTimer = 0;
-      Sound.play("sfx_timebonus");
-      FX.showTimeBonus();
-    }, wait);
+    Sound.play("sfx_timebonus");
+    FX.showTimeBonus();
   }
 
   /* ── 타이머 ────────────────────────────────────────── */
@@ -141,7 +132,7 @@ var Game = (function () {
 
   function gameOver() {
     cancelAnimationFrame(raf);
-    cancelPending();
+    cancelChange();
     Drag.cancel();
     Render.setLowTime(false);
     stage.classList.add("locked", "over");
@@ -170,7 +161,7 @@ var Game = (function () {
   /** 새 판. 시작 화면 탭과 RETRY 가 공유한다. */
   function newGame() {
     cancelAnimationFrame(raf);
-    cancelPending();
+    cancelChange();
     stage.classList.remove("over");
     Drag.cancel();
     Board.reset(CONFIG.BOARD);

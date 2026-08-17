@@ -66,19 +66,11 @@ var Sound = (function () {
     play("intro");
   }
 
-  /** 이 효과음이 끝나기까지 남은 ms. 안 틀고 있으면 0. */
-  function timeLeft(name) {
-    var a = el[name];
-    if (a.paused || !isFinite(a.duration)) return 0;
-    return Math.max(0, (a.duration - a.currentTime) * 1000);
-  }
-
   function stopMusic() {
     el.intro.onended = null;
     el.intro.pause();
     el.bgm_loop.pause();
   }
 
-  return { unlock: unlock, play: play, timeLeft: timeLeft,
-           startMusic: startMusic, stopMusic: stopMusic };
+  return { unlock: unlock, play: play, startMusic: startMusic, stopMusic: stopMusic };
 })();
