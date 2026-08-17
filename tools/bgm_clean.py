@@ -101,6 +101,17 @@ for i in range(len(X)):
     V[i] = VALID[i, :nw * HOP].reshape(nw, HOP).all(axis=1)
 E[~V] = np.inf
 
+# 마지막 바퀴들에는 **게임오버 뒤 BGM 이 꺼진 무음**이 들어 있다. 그냥 최솟값을
+# 고르면 그 무음이 '가장 조용한 조각'으로 뽑혀 루프 끝이 뚝 끊긴다.
+# 그래서 그 창의 중앙값보다 한참 낮은 조각은 '음악이 멎은 것'으로 보고 뺀다.
+# 음악이 원래 조용한 대목이면 중앙값도 같이 낮아지므로 비율로 재면 안전하다.
+Enan = np.where(np.isfinite(E), E, np.nan)
+med = np.nanmedian(Enan, axis=0)
+dead = E < np.maximum(0.5 * med, 0.02 * np.nanmedian(med))
+print("BGM 이 멎어 있던 창 %d 개 제외" % dead.sum())
+E[dead] = np.inf
+V &= ~dead
+
 floor = np.maximum(E.min(axis=0), 1e-5)   # 완전 무음 창에서 0 나눗셈 방지
 clean = E <= floor * CLEAN + 1e-6
 print("창 %d 개, 창마다 깨끗한 조각 평균 %.2f 개, 최소 %d 개"
