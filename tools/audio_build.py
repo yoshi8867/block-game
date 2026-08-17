@@ -30,7 +30,8 @@ VIDEO2 = r"C:\Users\nutel\OneDrive\Desktop\dev\hgame\KakaoTalk_20260817_03272226
 # 출력이름: (원본파일, 시작초, 길이초 또는 None=끝까지)
 JOBS = {
     "intro":         (VIDEO2, 2.300, 4.0),
-    "bgm_loop":      ("bgm_loop.wav", 0, None),
+    # bgm_loop 는 여기서 만들지 않는다 — tools/bgm_clean.py 가 효과음을 걷어내고
+    # 여덟 바퀴를 합성해 만든다. 여기서 다시 만들면 그 결과를 덮어쓴다.
     "sfx_nice":      ("sfx_nice.wav", 0, None),
     "sfx_perfect":   ("sfx_perfect.wav", 0, None),
     "sfx_gameover":  ("sfx_gameover.wav", 0, None),
