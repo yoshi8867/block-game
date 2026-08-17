@@ -247,10 +247,11 @@
    원작은 타일 뒤에 깔지만 가려서 안 보인다는 지적에 따라 맨 앞으로 올렸다
    (#flash z-index 55 보다 위).
 
-   원작은 이 워드아트를 **반투명으로** 얹는다. 프레임 실측 색과 맞춰 보면
-   saturate(2.2) + opacity .5 로 채움(#900F31 vs 실측 #900F32)과
-   검은 외곽선(#10052A vs 실측 #100628)이 동시에 맞는다.
-   더 쨍하게 가고 싶으면 이 두 줄만 지우면 된다. */
+   원작은 이 워드아트를 알파 0.5 로 얹는다 (프레임 실측 색과 맞춰 보면
+   saturate(2.2) + opacity .5 로 채움 #900F31 vs 실측 #900F32,
+   검은 외곽선 #10052A vs 실측 #100628 이 동시에 맞았다).
+   그런데 타일 뒤가 아니라 맨 앞으로 올리고 나니 너무 연해서 알파를 올렸다.
+   원작 그대로 가려면 opacity .5 / saturate(2.2), 원본 색 그대로면 두 줄 다 지운다. */
 #over-title {
   z-index: 60;
   left: 50%;
@@ -258,8 +259,8 @@
   transform: translate(-50%, -50%);
   display: none;
   width: 59.3cqw;
-  opacity: .5;
-  filter: saturate(2.2);
+  opacity: .88;
+  filter: saturate(1.35);
 }
 
 #stage.over #over-title { display: block; }
