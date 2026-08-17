@@ -37,6 +37,8 @@ var Game = (function () {
   var score = 0;
   var endAt = 0;         // performance.now() 기준 종료 시각
   var raf = 0;
+  var changeTimer = 0;   // block change 대기 중이면 setTimeout 핸들
+  var changeBtn = document.getElementById("block-change");
 
   function refillTray() {
     for (var i = 0; i < 3; i++) {
@@ -45,10 +47,27 @@ var Game = (function () {
     Render.drawTray(tray, CONFIG.TRAY_SCALE);
   }
 
-  function rerollTray() {
+  /** block change: 트레이를 즉시 비우고 1.5초 뒤에 새로 채운다.
+      비어 있는 동안 아무것도 못 놓는 게 패널티다. 횟수 제한은 없다. */
+  function blockChange() {
+    if (changeTimer) return;                 // 대기 중 연타 무시
+    if (stage.classList.contains("locked")) return;   // 카운트다운 중 · 종료 후
     Drag.cancel();
     tray = [null, null, null];
-    refillTray();
+    Render.drawTray(tray, CONFIG.TRAY_SCALE);
+    changeBtn.disabled = true;
+    changeTimer = setTimeout(function () {
+      changeTimer = 0;
+      changeBtn.disabled = false;
+      refillTray();
+    }, CONFIG.BLOCK_CHANGE_MS);
+  }
+
+  /** 대기 중이던 리필을 취소한다 (새 판 / 게임오버). */
+  function cancelChange() {
+    clearTimeout(changeTimer);
+    changeTimer = 0;
+    changeBtn.disabled = false;
   }
 
   /** 점수 = 800×줄 + 100×(완성한 줄의 h 칸) + 15×내려놓은 칸 */
@@ -111,6 +130,7 @@ var Game = (function () {
 
   function gameOver() {
     cancelAnimationFrame(raf);
+    cancelChange();
     Drag.cancel();
     Render.setLowTime(false);
     stage.classList.add("locked", "over");
@@ -139,6 +159,7 @@ var Game = (function () {
   /** 새 판. 시작 화면 탭과 RETRY 가 공유한다. */
   function newGame() {
     cancelAnimationFrame(raf);
+    cancelChange();
     stage.classList.remove("over");
     Drag.cancel();
     Board.reset(CONFIG.BOARD);
@@ -196,8 +217,7 @@ var Game = (function () {
       Render.setScore(score);
       startClock();
     }
-    // 정식 동작(1.5초 대기)은 7단계에서. 지금은 즉시 리롤로 블록 확인용.
-    document.getElementById("block-change").addEventListener("click", rerollTray);
+    changeBtn.addEventListener("click", blockChange);
 
     // 테스트용 툴바 (임시)
     var pull = document.getElementById("dev-pull");
@@ -230,7 +250,7 @@ var Game = (function () {
     });
 
     // ?auto=fx|end|clear — 헤드리스 스크린샷용. 0.9초 뒤 해당 테스트 버튼을 누른다.
-    var auto = /[?&]auto=([a-z,]+)/.exec(location.search);
+    var auto = /[?&]auto=([a-z,-]+)/.exec(location.search);
     if (auto) {
       auto[1].split(",").forEach(function (name, i) {
         setTimeout(function () {
@@ -242,7 +262,7 @@ var Game = (function () {
     }
   }
 
-  return { init: init, rerollTray: rerollTray };
+  return { init: init };
 })();
 
 Game.init();
