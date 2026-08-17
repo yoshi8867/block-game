@@ -161,6 +161,23 @@
 
 #block-change:disabled { opacity: .55; cursor: default; }
 
+/* ── 테스트용 툴바 (임시) ────────────────────────────── */
+#devbar {
+  left: 10.28%; top: 85%; width: 79.63%; height: 4%;
+  display: flex;
+  gap: 2cqw;
+}
+
+#devbar button {
+  flex: 1;
+  font: inherit;
+  font-size: 3.2cqw;
+  color: #fff;
+  background: rgba(0, 0, 0, .45);
+  border: 0.3cqw solid rgba(255, 255, 255, .45);
+  border-radius: 1.6cqw;
+}
+
 /* ── 배너 (카운트다운 / NICE! / PERFECT! / GAME OVER) ── */
 #banner { display: grid; place-items: center; }
 

@@ -19,7 +19,10 @@ var CONFIG = {
 
   // 드래그 중 블록을 손가락보다 위로 띄우는 양 (무대 가로폭 비율).
   // 0 = 원작대로 잡은 지점 그대로. 손가락에 가려 안 보이면 0.06 정도로 올린다.
-  DRAG_LIFT: 0
+  DRAG_LIFT: 0,
+
+  // 보드 밖으로 삐져나간 블록을 몇 칸까지 안으로 끌어당길지. 0 = 끔.
+  EDGE_PULL: 1
 };
 
 var Game = (function () {
@@ -94,6 +97,18 @@ var Game = (function () {
     }
     // 정식 동작(1.5초 대기)은 7단계에서. 지금은 즉시 리롤로 블록 확인용.
     document.getElementById("block-change").addEventListener("click", rerollTray);
+
+    // 테스트용 툴바 (임시)
+    var pull = document.getElementById("dev-pull");
+    pull.addEventListener("click", function () {
+      CONFIG.EDGE_PULL = CONFIG.EDGE_PULL ? 0 : 1;
+      pull.textContent = "PULL " + (CONFIG.EDGE_PULL ? "ON" : "OFF");
+    });
+    document.getElementById("dev-clear").addEventListener("click", function () {
+      Drag.cancel();
+      Board.reset(CONFIG.BOARD);
+      Render.paintBoard(Board.get);
+    });
   }
 
   return { init: init, rerollTray: rerollTray };

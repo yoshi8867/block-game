@@ -17,6 +17,17 @@ var Drag = (function () {
 
   function clamp01(v) { return v < 0 ? 0 : v > 1 ? 1 : v; }
 
+  /** 보드 밖으로 조금 삐져나간 블록을 안으로 끌어당긴다.
+     가장자리 줄은 바깥으로 밀 여지가 없어 실질 허용치가 절반뿐이라서.
+     CONFIG.EDGE_PULL = 0 이면 끈다. */
+  function pull(v, span) {
+    var lim = CONFIG.EDGE_PULL;
+    var max = CONFIG.BOARD - span;
+    if (v < 0) return v >= -lim ? 0 : v;
+    if (v > max) return v <= max + lim ? max : v;
+    return v;
+  }
+
   /** 보드 칸 격자를 실측한다. 창 크기가 바뀌어도 항상 맞는다. */
   function geom() {
     var a = boardEl.children[0].getBoundingClientRect();
@@ -71,8 +82,8 @@ var Drag = (function () {
 
     var box = c.el.getBoundingClientRect();
     var g = geom();
-    var r0 = Math.round((box.top - g.top) / g.pitch);
-    var c0 = Math.round((box.left - g.left) / g.pitch);
+    var r0 = pull(Math.round((box.top - g.top) / g.pitch), c.piece.rows);
+    var c0 = pull(Math.round((box.left - g.left) / g.pitch), c.piece.cols);
     c.el.remove();
 
     if (Board.canPlace(c.piece, r0, c0)) {
