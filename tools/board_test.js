@@ -38,6 +38,23 @@ assert.deepStrictEqual(lines, { rows: [0], cols: [0] });
 assert.strictEqual(Board.countH(lines), 8 + 1, "교차 h는 두 줄 모두에 카운트");
 assert.strictEqual(Board.clearLines(lines).length, 15, "교차 칸은 한 번만 지워진다");
 
+// 점수 공식 — 사용자가 준 예시: 7칸 깔린 줄에 1×1 을 끼워 완성 = 800 + 15 = 815
+const SCORE = (lines, hits, placed) =>
+  800 * (lines.rows.length + lines.cols.length) + 100 * hits + 15 * placed;
+
+Board.reset(8);
+for (let c = 0; c < 7; c++) Board.place(piece(["X"]), 0, c);
+Board.place(piece(["X"]), 0, 7);
+lines = Board.fullLines();
+assert.strictEqual(SCORE(lines, Board.countH(lines), 1), 815);
+
+// h 두 칸이 낀 줄을 4칸 블록으로 완성: 800 + 100×2 + 15×4 = 1060
+Board.reset(8);
+Board.place(piece(["hXhX"]), 0, 0);
+Board.place(piece(["XXXX"]), 0, 4);
+lines = Board.fullLines();
+assert.strictEqual(SCORE(lines, Board.countH(lines), 4), 1060);
+
 // 데드락 판정
 Board.reset(2);
 assert(Board.anyFit(piece(["XX"])));

@@ -30,6 +30,7 @@ var Game = (function () {
 
   var stage = document.getElementById("stage");
   var tray = [null, null, null];
+  var score = 0;
 
   function refillTray() {
     for (var i = 0; i < 3; i++) {
@@ -44,17 +45,42 @@ var Game = (function () {
     refillTray();
   }
 
-  /** 블록을 보드에 놓은 뒤. 점수·연출은 4단계에서 붙인다. */
+  /** 점수 = 800×줄 + 100×(완성한 줄의 h 칸) + 15×내려놓은 칸 */
   function onPlace(slot, piece, r, c) {
     Board.place(piece, r, c);
     tray[slot] = null;
 
+    var gain = CONFIG.SCORE_CELL * piece.cells.length;
     var lines = Board.fullLines();
-    if (lines.rows.length || lines.cols.length) Board.clearLines(lines);
+    var n = lines.rows.length + lines.cols.length;
 
-    Render.paintBoard(Board.get);
+    if (n) {
+      var hits = Board.countH(lines);          // 지우기 전에 세야 한다
+      gain += CONFIG.SCORE_LINE * n + CONFIG.SCORE_H * hits;
+      var cleared = Board.clearLines(lines);
+      Render.paintBoard(Board.get);
+      FX.burst(cleared);
+      FX.showBanner(hits ? "perfect" : "nice");
+    } else {
+      Render.paintBoard(Board.get);
+    }
+
+    addScore(gain);
     refillTray();
   }
+
+  function addScore(gain) {
+    var before = score;
+    score += gain;
+    Render.setScore(score);
+    for (var i = 0; i < CONFIG.TIME_BONUS_AT.length; i++) {
+      var at = CONFIG.TIME_BONUS_AT[i];
+      if (before < at && score >= at) timeBonus();
+    }
+  }
+
+  /** 실제 시간은 주지 않는다. 효과음만 — 6단계에서 연결. */
+  function timeBonus() {}
 
   /** 브라우저 주소창/하단바를 숨긴다. 사용자 제스처 안에서만 허용된다. */
   function goFullscreen() {
@@ -93,7 +119,8 @@ var Game = (function () {
     // ?dev — 시작 화면을 건너뛴다. 레이아웃 대조용.
     if (/[?&]dev\b/.test(location.search)) {
       stage.classList.add("started");
-      Render.setScore(25815);
+      score = 25815;
+      Render.setScore(score);
     }
     // 정식 동작(1.5초 대기)은 7단계에서. 지금은 즉시 리롤로 블록 확인용.
     document.getElementById("block-change").addEventListener("click", rerollTray);
@@ -108,7 +135,24 @@ var Game = (function () {
       Drag.cancel();
       Board.reset(CONFIG.BOARD);
       Render.paintBoard(Board.get);
+      score = 0;
+      Render.setScore(0);
     });
+    // 줄 삭제 연출을 손으로 안 만들고 바로 보기 위한 버튼
+    document.getElementById("dev-fx").addEventListener("click", function () {
+      var colors = ["purple", "yellow", "cyan", "pink"];
+      Drag.cancel();
+      Board.reset(CONFIG.BOARD);
+      for (var c = 0; c < 7; c++) {
+        Board.place({ color: colors[c % 4], cells: [{ r: 0, c: 0, h: c % 3 === 0 }] }, 3, c);
+      }
+      Render.paintBoard(Board.get);
+      onPlace(0, { color: "cyan", cells: [{ r: 0, c: 0, h: true }] }, 3, 7);
+    });
+    // ?fx — 헤드리스 스크린샷으로 연출을 확인하려고 자동 발사
+    if (/[?&]fx\b/.test(location.search)) {
+      setTimeout(function () { document.getElementById("dev-fx").click(); }, 900);
+    }
   }
 
   return { init: init, rerollTray: rerollTray };
