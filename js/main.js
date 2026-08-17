@@ -18,6 +18,9 @@ var CONFIG = {
   BLOCK_CHANGE_MS: 1500,   // block change 리프레시 대기
   COUNT_MS: 1000,          // 카운트다운 한 단계 (원작 실측 정확히 1.0초)
 
+  BGM_VOLUME: 0.45,
+  SFX_VOLUME: 1.0,
+
   // 드래그 중 블록을 손가락보다 위로 띄우는 양 (무대 가로폭 비율).
   // 0 = 원작대로 잡은 지점 그대로. 손가락에 가려 안 보이면 0.06 정도로 올린다.
   DRAG_LIFT: 0,
@@ -64,6 +67,8 @@ var Game = (function () {
       Render.paintBoard(Board.get);
       FX.burst(cleared);
       FX.showBanner(hits ? "perfect" : "nice");
+      Sound.play("sfx_lineclear");                        // 판정음과 겹쳐서 난다
+      Sound.play(hits ? "sfx_perfect" : "sfx_nice");
     } else {
       Render.paintBoard(Board.get);
     }
@@ -82,8 +87,10 @@ var Game = (function () {
     }
   }
 
-  /** 실제 시간은 주지 않는다. 효과음만 — 6단계에서 연결. */
-  function timeBonus() {}
+  /** 실제 시간은 주지 않는다. 효과음만. */
+  function timeBonus() {
+    Sound.play("sfx_timebonus");
+  }
 
   /* ── 타이머 ────────────────────────────────────────── */
 
@@ -106,6 +113,8 @@ var Game = (function () {
     Drag.cancel();
     Render.setLowTime(false);
     stage.classList.add("locked", "over");
+    Sound.stopMusic();
+    Sound.play("sfx_gameover");
   }
 
   /* ── 인트로 카운트다운 ─────────────────────────────── */
@@ -139,6 +148,7 @@ var Game = (function () {
     Render.setLowTime(false);
     tray = [null, null, null];
     refillTray();
+    Sound.startMusic();          // intro → 끝나면 bgm 루프
     runIntro(startClock);
   }
 
@@ -163,6 +173,7 @@ var Game = (function () {
   function start() {
     stage.classList.add("started");
     goFullscreen();
+    Sound.unlock();      // 이 탭이 유일한 사용자 제스처다. 여기서 재생 권한을 딴다
     newGame();
   }
 
