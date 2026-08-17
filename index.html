@@ -30,7 +30,33 @@
   </div>
 
   <div id="board-frame"></div>
-  <div id="board"><div id="over-title">GAME OVER</div></div>
+  <div id="board">
+  <!-- 원작 실측: 짙은 와인빛 빨강 + 두꺼운 남색 외곽선 + 윗부분 회색 광택.
+       textLength 로 폭을 고정해 폰트가 뭐든 원작 비율(가로 640 / 캡높이 88)을 지킨다. -->
+  <svg id="over-title" viewBox="0 0 660 130" aria-label="GAME OVER">
+    <defs>
+      <linearGradient id="go-fill" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#9C1B3F"/>
+        <stop offset=".55" stop-color="#8B1233"/>
+        <stop offset="1" stop-color="#6C0B27"/>
+      </linearGradient>
+      <clipPath id="go-clip">
+        <text x="330" y="106" textLength="620" lengthAdjust="spacingAndGlyphs">GAME OVER</text>
+      </clipPath>
+      <!-- 원작 광택은 글자마다 놓인 짧은 막대다. 글자 간격(620/9)마다 반복시켜
+           글자에 걸리는 부분만 보이게 한다. -->
+      <pattern id="go-gloss" x="26" width="68.9" height="130" patternUnits="userSpaceOnUse">
+        <rect y="33" width="30" height="10" rx="5" fill="#C9CBD8"/>
+      </pattern>
+    </defs>
+    <text x="330" y="106" textLength="620" lengthAdjust="spacingAndGlyphs"
+          stroke="#100628" stroke-width="15" paint-order="stroke"
+          fill="url(#go-fill)">GAME OVER</text>
+    <g clip-path="url(#go-clip)">
+      <rect width="660" height="130" fill="url(#go-gloss)" opacity=".62"/>
+    </g>
+  </svg>
+</div>
 
   <div class="slot" data-slot="0"></div>
   <div class="slot" data-slot="1"></div>

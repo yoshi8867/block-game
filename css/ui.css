@@ -244,7 +244,8 @@
 #board { z-index: 0; }
 
 /* #board 안에 있으므로 좌표는 보드 기준이다.
-   화면 (50%, 49.6%) = 보드의 (49.88%, 86.6%) */
+   화면 (50%, 49.6%) = 보드의 (49.88%, 86.6%)
+   폭 660/1080 = 61.1cqw, 높이는 viewBox 비율대로 */
 #over-title {
   position: absolute;
   z-index: -1;
@@ -252,14 +253,16 @@
   top: 86.6%;
   transform: translate(-50%, -50%);
   display: none;
-  white-space: nowrap;
-  font-size: 9.6cqw;
-  letter-spacing: 0.3cqw;
-  color: #9E1436;
-  /* paint-order 가 HTML 텍스트에 안 먹는 브라우저가 있어 획이 절반만 보인다.
-     바깥으로 0.55cqw 가 남도록 두 배로 준다. */
-  -webkit-text-stroke: 0.75cqw #43091E;
-  text-shadow: 0 0.35cqw 0.5cqw rgba(0, 0, 0, .45);
+  width: 61.1cqw;
+  overflow: visible;
+  filter: drop-shadow(0 0.3cqw 0.5cqw rgba(0, 0, 0, .5));
+}
+
+#over-title text {
+  font-family: inherit;
+  font-weight: 900;
+  font-size: 118px;
+  text-anchor: middle;
 }
 
 #stage.over #over-title { display: block; }
