@@ -17,9 +17,6 @@ var CONFIG = {
 
   BLOCK_CHANGE_MS: 1500,   // block change 리프레시 대기
   COUNT_MS: 1000,          // 카운트다운 한 단계 (원작 실측 정확히 1.0초)
-  // intro.mp3 를 카운트다운보다 이만큼 늦게 튼다. 음원에 '3' 비프가 없어서
-  // 그냥 틀면 한 칸씩 밀린다. 3×COUNT_MS − 2060ms(긴 '띠—' 위치) = 940ms
-  INTRO_DELAY_MS: 940,
 
   BGM_VOLUME: 0.45,
   SFX_VOLUME: 1.0,
