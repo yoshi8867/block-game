@@ -1,6 +1,10 @@
 /* 블록 정의.
    원작은 모양(회전 포함)마다 색이 고정이다 — docs/analysis.md 1절 참조.
-   confirmed:false 인 4종은 영상에 한 번도 등장하지 않아 색상이 추정치다. */
+   confirmed:false 인 2종은 영상에 한 번도 등장하지 않아 색상이 추정치다.
+   tools/block_census.py 로 영상 두 개에서 152개를 세어 본 결과
+   `.X/XX/X.`(purple)·`XX/.X/.X`(pink)는 추정한 색 그대로 관측되어 확정했고,
+   남은 2종은 152개 중 0회다. 우연일 확률이 각 1.3% 라 **원작엔 없을 가능성**이
+   있다 (그러면 33종). 지울지는 미정 — todo.md 7절 참조. */
 var Blocks = (function () {
   "use strict";
 
@@ -14,7 +18,7 @@ var Blocks = (function () {
     { c: "purple", g: ["X..", "XXX"] },
     { c: "purple", g: ["X..", "X..", "XXX"] },
     { c: "purple", g: ["XXX", "XXX", "XXX"] },
-    { c: "purple", g: [".X", "XX", "X."], confirmed: false },
+    { c: "purple", g: [".X", "XX", "X."] },            // 152개 조사에서 2회 확인
 
     /* ── cyan ───────────────────────────── */
     { c: "cyan", g: ["XX"] },
@@ -25,7 +29,7 @@ var Blocks = (function () {
     { c: "cyan", g: ["XXX", ".X."] },
     { c: "cyan", g: ["..X", "..X", "XXX"] },
     { c: "cyan", g: ["XXX", "XXX"] },
-    { c: "cyan", g: ["XX", "X."], confirmed: false },
+    { c: "cyan", g: ["XX", "X."], confirmed: false },  // 152개 중 0회
 
     /* ── yellow ─────────────────────────── */
     { c: "yellow", g: ["X"] },
@@ -45,8 +49,8 @@ var Blocks = (function () {
     { c: "pink", g: ["XXX", "..X"] },
     { c: "pink", g: ["XXXX"] },
     { c: "pink", g: ["XXX", "X..", "X.."] },
-    { c: "pink", g: ["X.", "XX"], confirmed: false },
-    { c: "pink", g: ["XX", ".X", ".X"], confirmed: false }
+    { c: "pink", g: ["X.", "XX"], confirmed: false },  // 152개 중 0회
+    { c: "pink", g: ["XX", ".X", ".X"] }               // 152개 조사에서 3회 확인
   ];
 
   /** 정의 하나를 실제 조각으로 만든다. h 칸은 칸마다 독립적으로 뽑는다. */
