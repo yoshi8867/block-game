@@ -93,17 +93,18 @@
    원작은 시계와 게이지만 깜빡이지만 눈에 잘 안 띄어 전체 화면으로 바꿨다. */
 #flash {
   left: 0; top: 0; width: 100%; height: 100%;
-  background: rgba(255, 255, 255, .16);   /* 진하기는 여기서 조절 */
+  background: rgba(255, 255, 255, .20);   /* 진하기는 여기서 조절 */
   opacity: 0;
   pointer-events: none;
   z-index: 55;
 }
 
-#stage.low-time #flash { animation: lowtime .5s steps(1, end) infinite; }
+/* 딱딱 끊기는 점멸이 아니라 숨쉬듯 부풀었다 꺼진다. 주기는 여기서 조절 */
+#stage.low-time #flash { animation: lowtime 1.6s ease-in-out infinite; }
 
 @keyframes lowtime {
-  0%, 49%  { opacity: 0; }
-  50%, 99% { opacity: 1; }
+  0%, 100% { opacity: 0; }
+  50%      { opacity: 1; }
 }
 
 /* ── 보드 ────────────────────────────────────────────── */
