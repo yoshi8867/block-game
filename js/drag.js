@@ -15,6 +15,8 @@ var Drag = (function () {
   var api = null;   // { getPiece(i), onPlace(i, piece, r, c) }
   var cur = null;
 
+  function clamp01(v) { return v < 0 ? 0 : v > 1 ? 1 : v; }
+
   /** 보드 칸 격자를 실측한다. 창 크기가 바뀌어도 항상 맞는다. */
   function geom() {
     var a = boardEl.children[0].getBoundingClientRect();
@@ -26,14 +28,17 @@ var Drag = (function () {
     if (cur || !stage.classList.contains("started")) return;
     if (!e.target.closest) return;
 
-    var src = e.target.closest(".block");
-    if (!src || !src.parentElement.classList.contains("slot")) return;
+    // 집는 판정은 블록이 아니라 슬롯 전체다. 1×1 블록을 정확히 찍기 어려워서.
+    var slotEl = e.target.closest(".slot");
+    if (!slotEl) return;
 
-    var slot = +src.parentElement.dataset.slot;
+    var src = slotEl.querySelector(".block");
+    var slot = +slotEl.dataset.slot;
     var piece = api.getPiece(slot);
-    if (!piece) return;
+    if (!src || !piece) return;
 
-    // 잡은 지점을 블록 안의 비율로 기억한다 — 확대해도 같은 칸이 손가락 아래 남는다
+    // 잡은 지점을 블록 안의 비율로 기억한다 — 확대해도 같은 칸이 손가락 아래 남는다.
+    // ponytail: 블록 바깥을 찍었으면 가장 가까운 모서리를 잡은 것으로 친다
     var r = src.getBoundingClientRect();
     var el = Render.pieceEl(piece, 1);
     el.className += " dragging";
@@ -42,8 +47,8 @@ var Drag = (function () {
 
     cur = {
       slot: slot, piece: piece, el: el, src: src,
-      fx: (e.clientX - r.left) / r.width,
-      fy: (e.clientY - r.top) / r.height,
+      fx: clamp01((e.clientX - r.left) / r.width),
+      fy: clamp01((e.clientY - r.top) / r.height),
       w: full.width, h: full.height
     };
     src.style.visibility = "hidden";
