@@ -200,6 +200,68 @@
   60%, 100% { transform: translate(-50%, -50%) scale(1); }
 }
 
+/* ── 카운트다운 3 · 2 · 1 · GO! ──────────────────────── */
+/* 원작 실측: 가로 중앙, 글자들이 같은 베이스라인(y 993 = 42.44%) 위에 앉는다.
+   3·2·1 은 GO! 보다 키가 커서 위로 더 올라간다. */
+.count-art {
+  position: absolute;
+  left: 50%;
+  top: 42.44%;
+  transform: translate(-50%, -100%);
+  /* 원작 글자엔 검은 외곽선이 있다. 크롭할 때 밝기 키로 날아가서 그림자로 되살린다 */
+  filter: drop-shadow(0 0 0.35cqw #000) drop-shadow(0 0.2cqw 0.3cqw rgba(0, 0, 0, .6));
+}
+
+.count-art.c3 { width: 9.63cqw; }
+.count-art.c2 { width: 9.91cqw; }
+.count-art.c1 { width: 7.78cqw; }
+.count-art.cgo { width: 22.04cqw; }
+
+/* ── 게임 종료 ───────────────────────────────────────── */
+/* 원작 영상에 종료 화면이 안 나온다. 사용자 지시대로 중앙에 GAME OVER + RETRY 만 둔다. */
+#over {
+  left: 0; top: 0; width: 100%; height: 100%;
+  display: none;
+  place-content: center;
+  justify-items: center;
+  gap: 5cqw;
+  background: rgba(12, 5, 30, .6);
+  z-index: 60;
+}
+
+#stage.over #over { display: grid; }
+
+#over-title {
+  font-size: 11cqw;
+  letter-spacing: 0.4cqw;
+  background: linear-gradient(100deg, #35D8F5 0%, #C46BFF 45%, #FF5AC8 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  filter: drop-shadow(0 0.6cqw 1cqw rgba(0, 0, 0, .5));
+}
+
+#retry {
+  font: inherit;
+  font-size: 5cqw;
+  padding: 1.6cqw 9cqw;
+  border: 0.5cqw solid transparent;
+  border-radius: 999px;
+  background:
+    linear-gradient(#fff, #fff) padding-box,
+    linear-gradient(95deg, #35D8F5 0%, #A93BF0 55%, #E23FD0 100%) border-box;
+  box-shadow: 0 0 1.4cqw rgba(160, 90, 240, .5);
+  cursor: pointer;
+}
+
+#retry::after {
+  content: "RETRY";
+  background: linear-gradient(95deg, #22C8EE 0%, #9B3BF0 55%, #E23FD0 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
 /* ── 줄 삭제 파편 ────────────────────────────────────── */
 .burst {
   position: absolute;

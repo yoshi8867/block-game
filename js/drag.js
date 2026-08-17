@@ -36,7 +36,9 @@ var Drag = (function () {
   }
 
   function down(e) {
+    // locked = 카운트다운 중이거나 게임이 끝났다
     if (cur || !stage.classList.contains("started")) return;
+    if (stage.classList.contains("locked")) return;
     if (!e.target.closest) return;
 
     // 집는 판정은 블록이 아니라 슬롯 전체다. 1×1 블록을 정확히 찍기 어려워서.

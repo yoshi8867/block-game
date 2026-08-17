@@ -22,6 +22,20 @@ var FX = (function () {
     pink: "#FFA0DC"
   };
 
+  /* 카운트다운. 원작은 3·2·1·GO! 가 각각 1.0초씩, 확대 같은 움직임 없이 그냥 바뀐다.
+     글자는 폰트가 아니라 영상에서 잘라낸 이미지다 (tools/intro_crop.py). */
+  function showCount(kind) {
+    bannerEl.textContent = "";
+    var img = document.createElement("img");
+    img.src = "assets/cd" + kind + ".png";
+    img.className = "count-art c" + kind;
+    bannerEl.appendChild(img);
+  }
+
+  function clear() {
+    bannerEl.textContent = "";
+  }
+
   function showBanner(kind) {
     bannerEl.textContent = "";
     var img = document.createElement("img");
@@ -54,5 +68,5 @@ var FX = (function () {
     setTimeout(function () { if (el.parentNode) el.remove(); }, SHARD_MS);
   }
 
-  return { showBanner: showBanner, burst: burst };
+  return { showBanner: showBanner, burst: burst, showCount: showCount, clear: clear };
 })();
