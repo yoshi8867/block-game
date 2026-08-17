@@ -15,7 +15,9 @@ var CONFIG = {
 
   TIME_BONUS_AT: [6000, 9000],   // 이 점수를 넘는 순간 효과음만 (시간은 안 준다)
 
-  BLOCK_CHANGE_MS: 1500,   // block change 리프레시 대기
+  // block change 총 대기. 앞 절반은 줄어들며 사라지고, 뒤 절반은 커지며 나타난다.
+  // 절반값은 css/ui.css 의 trayOut/trayIn 애니메이션 길이와 같아야 한다.
+  BLOCK_CHANGE_MS: 1000,
   COUNT_MS: 1000,          // 카운트다운 한 단계 (원작 실측 정확히 1.0초)
 
   BGM_VOLUME: 0.45,
@@ -40,33 +42,41 @@ var Game = (function () {
   var changeTimer = 0;   // block change 대기 중이면 setTimeout 핸들
   var changeBtn = document.getElementById("block-change");
 
-  function refillTray() {
+  function refillTray(grow) {
     for (var i = 0; i < 3; i++) {
       if (!tray[i]) tray[i] = Blocks.random(CONFIG.H_CHANCE);
     }
-    Render.drawTray(tray, CONFIG.TRAY_SCALE);
+    Render.drawTray(tray, CONFIG.TRAY_SCALE, grow);
   }
 
-  /** block change: 트레이를 즉시 비우고 1.5초 뒤에 새로 채운다.
-      비어 있는 동안 아무것도 못 놓는 게 패널티다. 횟수 제한은 없다. */
+  /** block change: 앞 절반 동안 블록이 줄어들며 사라지고, 뒤 절반 동안 새 블록이
+      커지며 나타난다. 그 1초 내내 아무것도 못 놓는 게 패널티다. 횟수 제한은 없다.
+      애니메이션 길이는 css/ui.css 의 trayOut/trayIn 과 맞춰야 한다. */
   function blockChange() {
     if (changeTimer) return;                 // 대기 중 연타 무시
     if (stage.classList.contains("locked")) return;   // 카운트다운 중 · 종료 후
+    var half = CONFIG.BLOCK_CHANGE_MS / 2;
     Drag.cancel();
-    tray = [null, null, null];
-    Render.drawTray(tray, CONFIG.TRAY_SCALE);
+    tray = [null, null, null];               // 모델은 즉시 비운다 (집을 수 없게)
+    Render.trayOut();                        // 화면의 블록은 줄어들며 사라진다
     changeBtn.disabled = true;
     changeTimer = setTimeout(function () {
-      changeTimer = 0;
-      changeBtn.disabled = false;
-      refillTray();
-    }, CONFIG.BLOCK_CHANGE_MS);
+      refillTray(true);                      // 커지며 등장
+      changeTimer = setTimeout(function () {
+        changeTimer = 0;
+        changeBtn.disabled = false;
+      }, half);
+    }, half);
   }
 
-  /** 대기 중이던 리필을 취소한다 (새 판 / 게임오버). */
+  /** 대기 중이던 리필을 취소한다 (새 판 / 게임오버).
+      사라지는 중이었으면 블록이 안 보인 채 굳으므로 다시 그려 준다. */
   function cancelChange() {
-    clearTimeout(changeTimer);
-    changeTimer = 0;
+    if (changeTimer) {
+      clearTimeout(changeTimer);
+      changeTimer = 0;
+      refillTray();
+    }
     changeBtn.disabled = false;
   }
 

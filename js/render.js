@@ -52,13 +52,22 @@ var Render = (function () {
     return el;
   }
 
-  /** pieces: 길이 3 배열, 빈 칸은 null */
-  function drawTray(pieces, scale) {
+  /** pieces: 길이 3 배열, 빈 칸은 null. grow=true 면 커지며 나타난다. */
+  function drawTray(pieces, scale, grow) {
     for (var i = 0; i < 3; i++) {
       var slot = document.querySelector('.slot[data-slot="' + i + '"]');
       slot.textContent = "";
-      if (pieces[i]) slot.appendChild(pieceEl(pieces[i], scale));
+      if (!pieces[i]) continue;
+      var el = pieceEl(pieces[i], scale);
+      if (grow) el.classList.add("in");
+      slot.appendChild(el);
     }
+  }
+
+  /** 트레이의 블록들을 줄어들며 사라지게 한다 (모델은 건드리지 않는다) */
+  function trayOut() {
+    var blocks = document.querySelectorAll(".slot > .block");
+    for (var i = 0; i < blocks.length; i++) blocks[i].classList.add("out");
   }
 
   /** 보드 전체를 다시 그린다. 64칸뿐이라 델타 추적할 값어치가 없다. */
@@ -101,6 +110,7 @@ var Render = (function () {
     paintBoard: paintBoard,
     pieceEl: pieceEl,
     drawTray: drawTray,
+    trayOut: trayOut,
     setScore: setScore,
     setGauge: setGauge,
     setLowTime: setLowTime

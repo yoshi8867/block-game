@@ -143,6 +143,15 @@
   transform: translate(-50%, -50%);
 }
 
+/* block change: 0.5초 줄어들며 사라지고, 새 블록이 0.5초 커지며 나타난다.
+   길이는 CONFIG.BLOCK_CHANGE_MS 의 절반과 맞춰야 한다 (지금 1000ms → 500ms).
+   translate 를 빼먹으면 슬롯 왼쪽 위로 튀므로 키프레임마다 같이 적는다. */
+@keyframes trayOut { to   { transform: translate(-50%, -50%) scale(0); opacity: 0; } }
+@keyframes trayIn  { from { transform: translate(-50%, -50%) scale(0); opacity: 0; } }
+
+.slot > .block.out { animation: trayOut 500ms ease-in forwards; }
+.slot > .block.in  { animation: trayIn 500ms ease-out; }
+
 /* ── 트레이 ──────────────────────────────────────────── */
 .slot {
   border-radius: 3.2cqw;
