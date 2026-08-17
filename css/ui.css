@@ -89,13 +89,21 @@
   transform-origin: left center;
 }
 
-/* 잔여 시간 경고 — 원작은 시계와 게이지가 함께 하얗게 깜빡인다 */
-#stage.low-time #clock,
-#stage.low-time #gauge { animation: lowtime .5s steps(1, end) infinite; }
+/* 잔여 시간 경고 — 화면 전체를 반투명 흰 커버가 덮었다 벗었다 한다.
+   원작은 시계와 게이지만 깜빡이지만 눈에 잘 안 띄어 전체 화면으로 바꿨다. */
+#flash {
+  left: 0; top: 0; width: 100%; height: 100%;
+  background: rgba(255, 255, 255, .16);   /* 진하기는 여기서 조절 */
+  opacity: 0;
+  pointer-events: none;
+  z-index: 55;
+}
+
+#stage.low-time #flash { animation: lowtime .5s steps(1, end) infinite; }
 
 @keyframes lowtime {
-  0%, 49%  { filter: none; }
-  50%, 99% { filter: brightness(2.4) saturate(.25); }
+  0%, 49%  { opacity: 0; }
+  50%, 99% { opacity: 1; }
 }
 
 /* ── 보드 ────────────────────────────────────────────── */
@@ -163,15 +171,15 @@
 
 /* ── 테스트용 툴바 (임시) ────────────────────────────── */
 #devbar {
-  left: 10.28%; top: 85%; width: 79.63%; height: 4%;
+  left: 6%; top: 85%; width: 88%; height: 4%;
   display: flex;
-  gap: 2cqw;
+  gap: 1.4cqw;
 }
 
 #devbar button {
   flex: 1;
   font: inherit;
-  font-size: 3.2cqw;
+  font-size: 2.9cqw;
   color: #fff;
   background: rgba(0, 0, 0, .45);
   border: 0.3cqw solid rgba(255, 255, 255, .45);

@@ -212,6 +212,10 @@ var Game = (function () {
       onPlace(0, { color: "cyan", cells: [{ r: 0, c: 0, h: true }] }, 3, 7);
     });
     document.getElementById("dev-end").addEventListener("click", gameOver);
+    // 남은 시간을 경고 직전으로 당긴다
+    document.getElementById("dev-low").addEventListener("click", function () {
+      endAt = performance.now() + CONFIG.LOW_TIME_SECONDS * 1000;
+    });
 
     // ?auto=fx|end|clear — 헤드리스 스크린샷용. 0.9초 뒤 해당 테스트 버튼을 누른다.
     var auto = /[?&]auto=([a-z]+)/.exec(location.search);
